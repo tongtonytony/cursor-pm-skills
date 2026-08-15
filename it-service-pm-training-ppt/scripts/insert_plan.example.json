@@ -1,0 +1,36 @@
+{
+  "template_marker": "XXXX（插）",
+  "source_map": {
+    "3-实战篇": "3-实战篇",
+    "6-IT服务管理": "6-IT服务管理",
+    "1-启航篇": "1-启航篇",
+    "2-工程篇": "2-工程篇",
+    "file4": "_4_pm_training_temp.pptx"
+  },
+  "inserts": [
+    {
+      "source_key": "file4",
+      "source_page": 14,
+      "anchor_title": "信息化项目在组织中的定位",
+      "reason": "补充项目与组织架构关系图，帮助理解 PMO 与项目在不同组织形态中的位置",
+      "mode": "com-clone",
+      "final_title": "信息化项目在组织中的定位"
+    },
+    {
+      "source_key": "file4",
+      "source_page": 15,
+      "anchor_title": "价值交付的流水线",
+      "reason": "项目管理全生命周期全景，强化从启动到收尾的过程视角",
+      "mode": "script",
+      "final_title": "价值交付的流水线"
+    },
+    {
+      "source_key": "6-IT服务管理",
+      "source_page": 51,
+      "anchor_title": "IT运维的价值演进",
+      "reason": "ITIL4 服务价值系统 SVS 整体认知",
+      "mode": "com-clone",
+      "final_title": "IT运维的价值演进"
+    }
+  ]
+}

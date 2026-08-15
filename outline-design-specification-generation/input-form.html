@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>概要设计说明书信息录入表单</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: "Microsoft YaHei", "微软雅黑", sans-serif; max-width: 800px; margin: 0 auto; padding: 24px; background: #f5f5f5; }
+    h1 { color: #1a1a2e; font-size: 1.4em; margin-bottom: 24px; }
+    section { background: #fff; padding: 20px; margin-bottom: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    section h2 { font-size: 1.1em; color: #333; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+    label { display: block; font-size: 0.9em; color: #555; margin-bottom: 4px; }
+    input, textarea { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+    textarea { min-height: 60px; resize: vertical; }
+    button { background: #2563eb; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 1em; }
+    button:hover { background: #1d4ed8; }
+    .output { margin-top: 20px; padding: 16px; background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 6px; white-space: pre-wrap; font-family: monospace; font-size: 13px; }
+    .hint { font-size: 0.85em; color: #64748b; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h1>概要设计说明书信息录入表单</h1>
+  <p class="hint">填写完成后点击「生成可复制文本」，将结果复制到 Cursor 对话中。注意：关联的需求规格说明书需另行上传或粘贴到对话中。</p>
+
+  <form id="form">
+    <section>
+      <h2>一、基础信息</h2>
+      <label>项目名称（必填）</label>
+      <input type="text" name="projectName" placeholder="如：基于RAG的AI智能客服系统" required>
+      <label>行业/领域</label>
+      <input type="text" name="industry" placeholder="如：客服、金融、政务、教育、医疗">
+      <label>编制单位/部门（可选）</label>
+      <input type="text" name="org" placeholder="如：研发中心、技术部">
+      <label>版本号（可选）</label>
+      <input type="text" name="version" placeholder="如：V1.0">
+      <label>编制日期（可选）</label>
+      <input type="text" name="date" placeholder="如：2025年3月">
+    </section>
+
+    <section>
+      <h2>二、技术栈与部署</h2>
+      <label>技术栈（开发语言、框架、中间件等）</label>
+      <textarea name="techStack" placeholder="如：Python + FastAPI、向量数据库 Milvus、大模型 API"></textarea>
+      <label>部署环境</label>
+      <textarea name="deployEnv" placeholder="如：云服务器、Docker 容器化、K8s"></textarea>
+      <label>外部系统集成（可选）</label>
+      <textarea name="externalSystems" placeholder="需对接的第三方系统及接口方式"></textarea>
+    </section>
+
+    <section>
+      <h2>三、非功能性设计约束（可选）</h2>
+      <label>性能要求</label>
+      <textarea name="perfReq" placeholder="如：响应时间&lt;3秒、支持100并发"></textarea>
+      <label>安全要求</label>
+      <textarea name="secReq" placeholder="如：支持单点登录、数据加密"></textarea>
+      <label>其他约束</label>
+      <textarea name="otherConstraint" placeholder="合规、可扩展性等"></textarea>
+    </section>
+
+    <section>
+      <h2>四、需求规格说明书</h2>
+      <label>需求规格说明书文件路径（工作区内）或说明</label>
+      <textarea name="reqSpecPath" placeholder="如：需求规格说明书.docx 的路径，或说明「将另行上传/粘贴」"></textarea>
+    </section>
+
+    <section>
+      <h2>五、输出格式</h2>
+      <label>是否使用自定义 Word 模板？</label>
+      <input type="text" name="customTemplate" placeholder="若有，请填写模板文件路径；若无，留空则按默认格式输出">
+    </section>
+  </form>
+
+  <button type="button" onclick="generate()">生成可复制文本</button>
+  <div id="output" class="output" style="display:none;"></div>
+
+  <script>
+    function generate() {
+      const form = document.getElementById('form');
+      const fd = new FormData(form);
+      const lines = ['【概要设计说明书信息录入单】', ''];
+      const sections = [
+        ['一、基础信息', [
+          ['projectName', '项目名称'],
+          ['industry', '行业/领域'],
+          ['org', '编制单位/部门'],
+          ['version', '版本号'],
+          ['date', '编制日期']
+        ]],
+        ['二、技术栈与部署', [
+          ['techStack', '技术栈'],
+          ['deployEnv', '部署环境'],
+          ['externalSystems', '外部系统集成']
+        ]],
+        ['三、非功能性设计约束', [
+          ['perfReq', '性能要求'],
+          ['secReq', '安全要求'],
+          ['otherConstraint', '其他约束']
+        ]],
+        ['四、需求规格说明书', [
+          ['reqSpecPath', '需求规格说明书路径或说明']
+        ]],
+        ['五、输出格式', [
+          ['customTemplate', '自定义 Word 模板路径']
+        ]]
+      ];
+      for (const [secTitle, fields] of sections) {
+        lines.push(secTitle);
+        for (const [name, label] of fields) {
+          const v = (fd.get(name) || '').toString().trim();
+          if (v) lines.push('- ' + label + '：' + v);
+        }
+        lines.push('');
+      }
+      const out = document.getElementById('output');
+      out.textContent = lines.join('\n');
+      out.style.display = 'block';
+      out.focus();
+      document.execCommand('selectAll');
+    }
+  </script>
+</body>
+</html>
